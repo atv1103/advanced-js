@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        p {
+            max-width: 500px;
+            border: 5px solid red;
+        }
+    </style>
+</head>
+<body>
+    <!-- touch-события подобны событиям мыши за исключением того, что они поддерживают одновременные касания и различные расположения -->
+    <!-- Существует 4 основных события нажатия на сенсор: touchstart, touchend, touchmove, touchcansel -->
+
+    <h1>Touch events</h1>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis nulla adipisci placeat voluptatibus ex 
+        quibusdam cupiditate libero natus? A sequi odio omnis quia, magni aliquam quis deserunt corporis ipsum dolores?</p>
+
+    <script>
+        document.querySelector('p').addEventListener('touchstart', (event) => {
+            // multitouch - в массиве TouchList будет отображаться несколько объектов Touch
+            console.log('touchstart', event);
+        });
+        document.querySelector('p').addEventListener('touchend', (event) => {
+            console.log('touchend', event);
+        }, false);
+        document.querySelector('p').addEventListener('touchmove', (event) => {
+            console.log('touchmove', event);
+        }, false);
+        // Происходит если палец пользователя перемещается в интерфейс браузера или прикосновение должно быть отменено
+        setTimeout(() => {
+            alert("stop touch")
+        }, 5000);
+        document.querySelector('p').addEventListener('touchcancel', function(event) {
+            console.log('touchcancel', event);
+        }, false);
+    </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #block {
+            width: 100%;
+            height: 250px;
+            border: 1px solid rgb(0, 0, 0);
+            background: lightyellow;
+        }
+    </style>
+</head>
+<body>
+    <div id="block"></div>
+
+    <script>
+        function ontouch(el, callback) {
+            let targetTouch = el, // Элемент, который используем в качестве данных touch
+                dir, // Направление 
+                swipeType, // Тип swipe
+                startX, // Координата Х
+                startY, // Координата У
+                distX, // Положение Х при перемещении
+                distY, // Положение У при перемещении
+                minDistanse = 150, // Минимальное расстояние для определения swipe
+                forSwipe = 100, // Максимальное расстояние, разрешенное одновременно в перпендикулярном направлении для перемещения
+                allowedTime = 1000, // Время которое разрешено для определения swipe
+                elapsedTime, // Сколько времени прошло с начала swipe
+                startTime, // Начальное время
+                mouseisdown = false, // Нажата ли клавиша мыши
+                handletouch = callback; 
+
+            targetTouch.addEventListener('touchstart', (e) => {
+                let touchobj = e.changedTouches[0];
+                dir = 'none',
+                    swipeType = 'none',
+                    dist = 0,
+                    startX = touchobj.pageX,
+                    startY = touchobj.pageY,
+                    // Время, когда палец в первый раз дотронулся к сенсору поверхности
+                    startTime = new Date().getTime(),
+                    // Вызов callback функции
+                    // e - событие
+                    // none - direction
+                    // start - функция-обозначение
+                    // swipeType - тип swipe
+                    // 0 - расстояние, которое пройдено (т.к событие touchstart, его еще нет)
+                    handletouch(e, 'none', 'start', swipeType, 0)
+                e.preventDefault();
+            });
+
+            targetTouch.addEventListener('touchmove', function (e) {
+                let touchobj = e.changedTouches[0];
+                // Вычисление дистанции пути по горизонтали
+                distX = touchobj.pageX - startX;
+                // Вычисление дистанции пути по вертикали
+                distY = touchobj.pageY - startY;
+                // Вычисление модуля числа
+                if (Math.abs(distX) > Math.abs(distY)) {
+                    // Если дистанция по горизонтали больше, чем по вертикали - это горизонтальное движение (left/right)
+                    dir = (distX < 0) ? 'left' : 'right';
+                    handletouch(e, dir, 'move', swipeType, distX);
+                    // Вертикальное перемещение
+                } else {
+                    dir = (distY < 0) ? 'up' : 'down';
+                    handletouch(e, dir, 'move', swipeType, distY);
+                }
+                e.preventDefault()
+            });
+
+            targetTouch.addEventListener('touchend', (e) => {
+                let touchobj = e.changedTouches[0];
+                elapsedTime = new Date().getTime() - startTime // сколько прошло времени с начала touch
+                if (elapsedTime <= allowedTime) { // Условие, если прошедшее время меньше, чем разрешенное - тогда это swipe, иначе это длительное прикосновение
+                    // Условие для горизонтального пролистывания 
+                    if (Math.abs(distX) >= forSwipe && Math.abs(distY) <= minDistanse) {
+                        swipeType = dir // Устанавливаем положение влево/вправо
+                    }
+                    // Условие для вертикального пролистывания 
+                    if (Math.abs(distY) >= forSwipe && Math.abs(distX) <= minDistanse) {
+                        swipeType = dir // Устанавливаем положение вверх/вниз
+                    }
+                }
+                handletouch(e, dir, 'end', swipeType, (dir == 'left' || dir == 'right') ? distX : distY);
+                e.preventDefault()
+            });
+        }       
+        window.addEventListener('load', () => {
+            let el = document.querySelector('#block')
+                // evt - событие
+                // dir - направление перемещения
+                // phase - фаза (start, end, move)
+                // swipetype = был ли swipe пальцем
+                // distance - дистанция перемещения от начальной точки
+            ontouch(el, function(evt, dir, phase, swipetype, distance) {
+                let touchInfo = ''
+                touchInfo += '<b>Dir:</b> ' + dir + '<br />'
+                touchInfo += '<b>Phase:</b> ' + phase + '<br />'
+                touchInfo += '<b>Swipe Type:</b> ' + swipetype + '<br />'
+                touchInfo += '<b>Distance</b> ' + distance + '<br />'
+                el.innerHTML = touchInfo;
+            });
+        },)
+    </script>
+</body>
+</html>

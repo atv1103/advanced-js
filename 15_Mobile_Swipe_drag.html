@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #box {
+            width: 100px;
+            height: 50px;
+            font-size: 16px;
+            border: 1px solid rgb(166, 235, 56);
+            box-sizing: border-box;
+            background: rgb(145, 145, 82);
+            position: absolute;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .track {
+            width: 100%;
+            height: 55px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .track::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 1px;
+            background: black;
+            position: absolute;
+            top: 49%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="track" id="track">
+        <div id="box" style="left:0; top:0; width: 100px;">Drag me</div>   
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            let box = document.querySelector('#box'),
+
+                boxleft, // Левое положение движущегося элемента
+                startx, // Начальная координата Х
+                dist = 0, // Дистанция, которую пройдет элемент
+                touchobj = null, // Объект touch
+                ismousedown = false;
+            
+            box.addEventListener('touchstart', (e) => { // Каждый раз позиция будет меняться
+                touchobj = e.changedTouches[0]; // Первая точка touch на экране
+
+                boxleft = parseInt(box.style.left); // Позиция элемента слева
+                startx = parseInt(touchobj.clientX); // Координата Х
+                e.preventDefault();
+            },)
+
+            box.addEventListener('touchmove', (e) => {
+                touchobj = e.changedTouches[0];
+                let dist = parseInt(touchobj.clientX) - startx // Расчет расстояния дистанции которое прошел объект
+                // Перемещение объекта отномительно начальной позиции + дистанция, чтобы элемент не вышел за пределы
+                box.style.left = ((boxleft + dist > window.innerWidth - 100) ? 
+                    window.innerWidth - 100 : (boxleft + dist < 0) ? 0 : boxleft + dist) + 'px';
+                e.preventDefault(); 
+            },)
+        },)
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Long tap</title>
+
+    <style>
+        img {
+            max-width: 700px;
+            /* width: 100%;     */
+            /* height: 50vh; */
+        }
+
+        span {
+            position: absolute; 
+            display: none;
+            border: 2px solid green;
+            height: auto;
+            width: 80px;
+            background-color: #fff;
+            opacity: 0.9;   
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <!-- Long tap - длинное касание -->
+    <p>Touch this page</p>
+    <img src="./images/4.jpg" alt="landscape">
+    <span>
+        <a href="#">Delete</a><br>
+        <a href="#">Add</a><br>
+        <a href="#">Edit</a><br>
+        <a href="#">Read</a>
+    </span>
+
+    <script>
+        let span = document.querySelector('span'),
+            img = document.querySelector('img'),
+            timer;
+        img.addEventListener('touchstart', (event) => {
+            span.style.display = 'none';
+            let {
+                pageX,
+                pageY
+            } = event.touches[0];
+            span.style.top = (pageY + 8) + "px";
+            span.style.left = (pageX + 8) + "px";
+
+            event.preventDefault();
+            timer = setTimeout(longTouch, 1000);
+        }, false);
+        img.addEventListener('touchmove', (event) => {
+            event.preventDefault();
+            clearTimeout(timer);
+        }, false);
+        img.addEventListener('touchend', (event) => {
+            event.preventDefault();
+            clearTimeout(timer);
+        }, false);
+
+        function longTouch() {
+            span.style.display = 'block';
+            console.log('There was a long tap - now you can go on another page');
+        }
+    </script>
+</body>
+</html>

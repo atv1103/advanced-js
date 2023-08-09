@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scroll</title>
+
+    <style>
+        body {
+            height: 2000px;
+        }
+
+        p {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border: 3px solid green;
+        }
+
+        .fixed {
+            position: fixed;
+            top: 0;
+            right: 0;
+        }
+
+        #updown {
+            height: 9px;
+            width: 100px;
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            cursor: pointer;
+        }
+
+        #updown.up::before {
+            content: 'UP';
+            background-color: red;
+            color: #fff;    
+            border-radius: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Событие onscroll происходит когда элемент прокручивается
+        В отличие от события onwheel (колесико мыши) его могут генерировать только прокручиваемые элементы или окно window -->
+    <!-- Использование:
+    Показ дополнительных элементов навигации при прокрутке
+    Прогрузка и инициализация элементов интерфейса, ставших видимыми после прокрутки -->
+    <p id="showScroll">Hello World</p>
+    <div id="updown"></div>
+    
+    <script>
+        let paragraph = document.querySelector('#showScroll');
+        let upElement = document.querySelector('#updown');
+        // getBoundingClientRect - метод возвращает объект с left, top, right и bottom, width, heigth
+        // pageYOffset - получение текущей прокрутки окна
+        let paragraphBottom = paragraph.getBoundingClientRect().bottom + window.pageYOffset;
+        window.addEventListener('scroll', (ev) => {
+            let scrolled = window.pageYOffset;
+            paragraph.innerHTML = `${scrolled}px to get back`;
+            if (paragraph.classList.contains('fixed') && window.pageYOffset < paragraphBottom) {
+                paragraph.classList.remove('fixed');
+                upElement.className = '';
+            } else if (window.pageYOffset > paragraphBottom) {
+                paragraph.classList.add('fixed');
+                upElement.className = 'up';
+            }
+        });
+        upElement.addEventListener('click', (ev) => {
+            let PageY = window.pageYOffset;
+            switch (upElement.className) {
+                case 'up':
+                    // Прокрутка документа до указанных координат
+                    window.scrollTo(0, 0);
+                    upElement.className = '';
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>

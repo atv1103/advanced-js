@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="myCanvas" width="500" height="500"></canvas>
+
+    <script>
+        let canvas = document.querySelector('#myCanvas');
+        // Определение канваса на весь экран
+        canvas.width = window.outerWidth;
+        canvas.height = window.outerHeight;
+
+        let ctx = canvas.getContext('2d');
+
+        // Создание массива пути новых touches
+        let currentTouches = new Array();
+
+        // Возвращаем цвет для прорисовки
+        let randomColor = () => {
+            let colors = ['#3F3F3F', '#929292', '#00A3EE', '#F5D908', '#D80351'];
+            return colors[Math.floor(Math.random() * colors.length)]
+        };
+
+        // Нахождение конкретного прикосновения в массиве
+        let findCurrentTouchIndex = (id) => {
+            for (let i = 0; i < currentTouches.length; i++) {
+                if (currentTouches[i].id === id) {
+                    return i;
+                }
+            }
+            // Если не найдено
+            return -1;
+        };
+
+        // Добавляет новый touch в массив и прорисовывет начальную точку на канвасе
+        let touchStarted = (event) => {
+            let touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                let touch = touches[i];
+                // Определение цвета
+                let touchColor = randomColor();
+                // Добавление в массив
+                currentTouches.push({
+                    id: touch.identifier,
+                    pageX: touch.pageX,
+                    pageY: touch.pageY,
+                    color: touchColor
+                });
+                // Прорисовка контекста
+                ctx.beginPath();
+                ctx.arc(touch.pageX, touch.pageY, 2.5, Math.PI * 2, false);
+                ctx.fillStyle = touchColor;
+                ctx.fill();
+            }
+        };
+        // Прорисовка кривой на канвасе между предыдущей точкой и нынешней
+        let touchMoved = (event) => {
+            let touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                let touch = touches[i];
+                let currentTouchIndex = findCurrentTouchIndex(touch.identifier);
+
+                if (currentTouchIndex >= 0) {
+                    let currentTouch = currentTouches[currentTouchIndex];
+
+                    ctx.beginPath();
+                    ctx.moveTo(currentTouch.pageX, currentTouch.pageY);
+                    ctx.lineTo(touch.pageX, touch.pageY);
+                    ctx.lineWidth = 6;
+                    ctx.strokeStyle = currentTouch.color;
+                    ctx.stroke();
+
+                    // Обновление массива для объекта
+                    currentTouch.pageX = touch.pageX;
+                    currentTouch.pageY = touch.pageY;
+
+                    // Сохранение записи (currentTouch необходим для обновления рисунка)
+                    currentTouches.splice(currentTouchIndex, 1, currentTouch);
+                } else {
+                    console.log('Touch was not found!');
+                }
+            }
+        };
+        // Прорисовка линии к финальной точке на канвасе и удаление из текущего массива 
+        let touchEnded = (event) => {
+            let touches = event.changedTouches;
+
+            for (let i = 0; i < touches.length; i++) {
+                let touch = touches[i];
+                let currentTouchIndex = findCurrentTouchIndex(touch.identifier);
+
+                if (currentTouchIndex >= 0) {
+                    let currentTouch = currentTouches[currentTouchIndex];
+
+                    ctx.beginPath();
+                    ctx.moveTo(currentTouch.pageX, currentTouch.pageY);
+                    ctx.lineTo(touch.pageX, touch.pageY);
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = currentTouch.color;
+                    ctx.stroke();
+
+                    currentTouches.splice(currentTouchIndex, 1);
+                } else {
+                    console.log('Touch was not found!')
+                }
+            }
+        };
+
+
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault()
+            touchStarted(e);
+        })
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault()
+            touchEnded(e);
+        })
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault()
+            touchMoved(e);
+        })
+    </script>
+</body>
+</html>

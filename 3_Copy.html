@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copy</title>
+</head>
+<body>
+    <div>
+        Sorry, you can't copy this text, need to type independently. Thank you 
+    </div>
+    
+    <script>
+        document.querySelector('div').addEventListener('copy', (e) => {
+            alert('copying is prohibited');
+            e.preventDefault();
+        })
+    </script>
+</body>
+</html>

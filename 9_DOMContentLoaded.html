@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOMContentLoaded</title>
+</head>
+<body>
+    <!-- DOMContentLoaded - событие отображает, что все DOM-элементы разметки уже созданы, можно их искать, вешать обработчики
+    load - страница и все ресурсы загружены, используется редко, обычно нет нужды ждать этого момента -->
+    <img src="./images/3.webp">
+    
+    <script>
+        window.onload = () => {
+            let img = document.querySelector('img');
+            console.log("Image size: " + img.offsetWidth + "x" + img.offsetHeight);
+        }    
+        document.addEventListener("DOMContentLoaded", ready);
+
+        function ready() {
+            console.log('DOM is ready')
+        }
+    </script>
+</body>
+</html>

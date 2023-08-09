@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- deviceorientation - событие происходит когда сенсор ориентации на устройстве генерирует новые данные
+    текущего положения в сравнении с координатами Земли -->
+    <!-- Гироскоп - фиксирует перемещение телефона в пространстве скорость перемещения
+    Акселерометр - отслеживает повороты аппарата в пространстве (по осям). Обеспечивает поворот экрана на устройстве -->
+
+    Z axis position:
+    <div id="alpha">a</div>
+    X axis position:
+    <div id="beta">b</div>
+    Y axis position:
+    <div id="gamma">g</div>
+
+    <script>
+        window.addEventListener('deviceorientation', (event) => {
+            let alpha = event.alpha // Положение относительно оси Z (0...360)
+            let beta = event.beta   // Положение относительно оси X (-180...180)
+            let gamma = event.gamma // Положение относительно оси Y (-90...90)
+
+            document.querySelector("alpha").innerHTML = Math.floor(alpha);
+            document.querySelector("beta").innerHTML = Math.floor(beta);
+            document.querySelector("gamma").innerHTML = Math.floor(gamma);
+        }, false)
+    </script>
+</body>
+</html>

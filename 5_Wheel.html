@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheel event</title>
+
+    <style>
+        #container {
+            width: 200px;
+            height: 200px;
+            border: 1px solid black;
+            background: #0ff;
+            overflow: auto;
+        }
+    </style>
+</head>
+Scroll: <span id="delta">0</span> px
+<div id="container">
+    Scroll over me
+</div>
+<body>
+
+    <script>
+        // При прокрутке срабатывает событие onscroll. Оно произойдет при любой прокрутке, в том числе через клавиатуру
+        // Wheel является событием мышки. Оно генерируется над любым элементом при передвижении колеса мыши 
+        // Событие onscroll происходит после прокрутки, а onwheel - до прокрутки, поэтому в нем можно отменить саму прокрутку
+        
+        let elem = document.querySelector('#container');
+        if (elem.addEventListener) {
+            // Проверка наличия onwheel в браузере
+            if ('onwheel' in document) {
+                // IE9+, FF17+, Ch31+
+                elem.addEventListener("wheel", onWheel);
+            } else if ('onmousewheel' in document) {
+                // устаревший вариант события
+                elem.addEventListener("mousewheel", onWheel);
+            } else {
+                // Firefox < 17
+                elem.addEventListener("MozMousePixelScroll", onWheel);
+            }
+        } else { //IE8- 
+            elem.attachEvent("onmousewheel", onWheel);
+        }
+
+        function onWheel(e) {
+            console.log(e);
+            // wheelDelta не дает возможность узнать количество пикселей
+            let delta = e.deltaY
+            let info = document.getElementById('delta');
+            info.innerHTML = +info.innerHTML + delta;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag&Drop</title>
+
+    <style>
+        #ball {
+            width: 200px;
+            height: 200px;
+            border: 2px solid red;
+            border-radius: 50%;
+            background-image: url(./images/2.jpg);
+            background-size: 100% 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id="ball"></div>
+
+    <script>
+        // Порядок отображения событий
+        // ball.mousedown -> document.mousemove -> ball.mouseup
+        let ball = document.getElementById('ball');
+        ball.onmousedown = (e) => {
+            // Передвижение с учетом изначального сдвига shiftX/shiftY
+            let coords = getCoords(ball);
+            let shiftX = e.pageX - coords.left;
+            let shiftY = e.pageY - coords.top;
+            // Разместить на том же месте, но в абсолютных координатах
+            ball.style.position = 'absolute';
+            // Переместим в body, чтобы мяч был точно не внутри position:relative
+            document.body.appendChild(ball);
+            moveAt(e);
+
+            ball.style.zIndex = 100;
+            // Передвинуть мяч под координаты курсора
+            // и определить точку, в которую нужно переместиться
+            function moveAt(e) {
+                ball.style.left = e.pageX - shiftX + 'px';
+                ball.style.top = e.pageY - shiftY + 'px';
+            }
+            // Перемещать по экрану
+            document.onmousemove = (e) => {
+                moveAt(e);
+            };
+            // Отследить окончание переноса
+            ball.onmouseup = () => {
+                document.onmousemove = null;
+                ball.onmouseup = null;
+            };
+        }
+        // Отмена действия браузера по событию dragstart
+        ball.ondragstart = () => {
+            return false;
+        };
+        // Отследить нажатие
+        function getCoords(elem) {
+            let box = elem.getBoundingClientRect();
+            return {
+                top: box.top + pageYOffset,
+                left: box.left + pageXOffset
+            };
+        }
+    </script>
+</body>
+</html>
